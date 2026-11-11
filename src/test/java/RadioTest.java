@@ -3,6 +3,8 @@ import org.junit.jupiter.api.Test;
 
 public class RadioTest {
 
+    // --- ТЕСТЫ ДЛЯ 10 СТАНЦИЙ (по умолчанию) ---
+
     @Test
     public void shouldSetValidStation() {
         Radio radio = new Radio();
@@ -13,8 +15,8 @@ public class RadioTest {
     @Test
     public void shouldNotSetInvalidStation() {
         Radio radio = new Radio();
-        radio.setCurrentStation(10); // Невалидное значение
-        Assertions.assertEquals(0, radio.getCurrentStation()); // Остается дефолтным
+        radio.setCurrentStation(10); // Невалидное значение (максимум 9)
+        Assertions.assertEquals(0, radio.getCurrentStation());
     }
 
     @Test
@@ -49,6 +51,40 @@ public class RadioTest {
         Assertions.assertEquals(9, radio.getCurrentStation());
     }
 
+    // --- НОВЫЕ ТЕСТЫ ДЛЯ КОНСТРУКТОРА С ПАРАМЕТРОМ (например, 30 станций) ---
+
+    @Test
+    public void shouldSetValidStationForCustomCount() {
+        Radio radio = new Radio(30);
+        radio.setCurrentStation(15);
+        Assertions.assertEquals(15, radio.getCurrentStation());
+    }
+
+    @Test
+    public void shouldNotSetInvalidStationForCustomCount() {
+        Radio radio = new Radio(30);
+        radio.setCurrentStation(30); // Невалидное (максимум 29)
+        Assertions.assertEquals(0, radio.getCurrentStation());
+    }
+
+    @Test
+    public void shouldSwitchFromMaxToMinForCustomCount() {
+        Radio radio = new Radio(30);
+        radio.setCurrentStation(29); // Максимальная для 30 станций
+        radio.next();
+        Assertions.assertEquals(0, radio.getCurrentStation());
+    }
+
+    @Test
+    public void shouldSwitchFromMinToMaxForCustomCount() {
+        Radio radio = new Radio(30);
+        radio.setCurrentStation(0);
+        radio.prev();
+        Assertions.assertEquals(29, radio.getCurrentStation());
+    }
+
+    // --- ТЕСТЫ ГРОМКОСТИ ---
+
     @Test
     public void shouldIncreaseVolume() {
         Radio radio = new Radio();
@@ -69,7 +105,7 @@ public class RadioTest {
     @Test
     public void shouldDecreaseVolume() {
         Radio radio = new Radio();
-        radio.increaseVolume(); // Сделали 1
+        radio.increaseVolume();
         radio.decreaseVolume();
         Assertions.assertEquals(0, radio.getCurrentVolume());
     }
@@ -77,7 +113,7 @@ public class RadioTest {
     @Test
     public void shouldNotGoBelowMinVolume() {
         Radio radio = new Radio();
-        radio.decreaseVolume(); // Пытаемся убавить с 0
+        radio.decreaseVolume();
         Assertions.assertEquals(0, radio.getCurrentVolume());
     }
 }
